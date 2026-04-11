@@ -1,8 +1,18 @@
-﻿# Defining game settings
-WIDTH = 800
-HEIGHT = 600
+﻿# Game settings
+TITLE = "Tank Game"
+
+WIDTH = 1280
+HEIGHT = 720
+
 FPS = 60
 
-# Player Variables
-PLAYER_START_X = 400
-PLAYER_START_Y = 500
+# grid
+TILESIZE = 32
+GRIDWIDTH = WIDTH / TILESIZE
+GRIDHEIGHT = HEIGHT / TILESIZE
+
+# colours
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+TAN = (234, 219, 198)
