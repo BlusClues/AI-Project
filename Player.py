@@ -7,8 +7,8 @@ class Player(pygame.sprite.Sprite):
         self.groups = game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pygame.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
+        self.source_image = pygame.transform.rotozoom(pygame.image.load('Assets/BlueTank.png').convert_alpha(), -90, TANKSCALE)
+        self.image = self.source_image.copy()
 
         self.rect = self.image.get_rect()
         self.x = x
@@ -25,6 +25,11 @@ class Player(pygame.sprite.Sprite):
         if not self.colliding_with_walls(dx, dy):
             self.x += dx
             self.y += dy
+
+    def rotate_sprite(self, angle):
+        rotation_angle = (round(angle / 90)) * 90
+        self.image = pygame.transform.rotate(self.source_image, rotation_angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
 
     def update(self):
         self.rect.x = self.x*TILESIZE

@@ -1,5 +1,6 @@
 ﻿import pygame
 import sys
+import math
 
 from os import path
 
@@ -8,8 +9,9 @@ from Settings import *
 from Player import Player
 from TileMap import Map
 
-# Defining Variables
-filename = 'TextMap.txt'
+# resources
+# https://www.youtube.com/watch?v=8-hNcOmkZtg
+# https://www.youtube.com/watch?v=wu1cd1Qycz4&t=3s
 
 class Game:
     def __init__(self):
@@ -20,6 +22,9 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
 
+        # Load Assets
+        self.background = pygame.transform.scale(pygame.image.load(BACKGROUND_IMAGE).convert(), (WIDTH, HEIGHT))
+
         # game control
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 10)
@@ -28,7 +33,7 @@ class Game:
 
     def load(self):
         game_dir = path.dirname(__file__)
-        self.map = Map(path.join(game_dir, filename))
+        self.map = Map(path.join(game_dir, MAP_FILENAME))
 
     def new_instance(self):
         # create a new instance of the game
@@ -42,10 +47,6 @@ class Game:
                     Wall(self, col, row)
                 elif tile == 'P':
                     self.player = Player(self, col, row)
-
-        # self.player = Player(self, 0, 0)
-        # for x in range(5, 10):
-        #     Wall(self, x, 5)
 
     def run(self):
         # game loop
@@ -65,20 +66,26 @@ class Game:
         self.all_sprites.update()
 
     def events(self):
+        self.mouse_coords = pygame.mouse.get_pos()
+        self.x_change_mouse_player = (self.mouse_coords[0] - self.player.rect.centerx)
+        self.y_change_mouse_player = (self.mouse_coords[1] - self.player.rect.centery)
+        self.angle = math.degrees(math.atan2(self.y_change_mouse_player, -self.x_change_mouse_player))
+
+        self.player.rotate_sprite(self.angle)
+
         # handle events in game loop
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 self.quit()
             if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_LEFT:
+                if e.key == pygame.K_LEFT or e.key == pygame.K_a:
                     self.player.move(dx=-1)
-                if e.key == pygame.K_RIGHT:
+                if e.key == pygame.K_RIGHT or e.key == pygame.K_d:
                     self.player.move(dx=1)
-                if e.key == pygame.K_DOWN:
+                if e.key == pygame.K_DOWN or e.key == pygame.K_s:
                     self.player.move(dy=1)
-                if e.key == pygame.K_UP:
+                if e.key == pygame.K_UP or e.key == pygame.K_w:
                     self.player.move(dy=-1)
-
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -89,7 +96,7 @@ class Game:
 
     def draw(self):
         # draw items in game loop
-        self.screen.fill(TAN)
+        self.screen.blit(self.background, (0, 0))
         self.draw_grid()
         self.all_sprites.draw(self.screen)
 

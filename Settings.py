@@ -6,7 +6,12 @@ HEIGHT = 720
 
 FPS = 60
 
+# Player/Tank
+TANKSCALE = 0.75
+
 # grid
+BACKGROUND_IMAGE = 'Assets/Maps/BasicTestBackground.png'
+MAP_FILENAME = 'Assets/Maps/TextMap.txt'
 TILESIZE = 32
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
