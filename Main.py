@@ -70,8 +70,9 @@ class Game:
         self.x_change_mouse_player = (self.mouse_coords[0] - self.player.rect.centerx)
         self.y_change_mouse_player = (self.mouse_coords[1] - self.player.rect.centery)
         self.angle = math.degrees(math.atan2(self.y_change_mouse_player, -self.x_change_mouse_player))
+        self.rounded_angle = (round(self.angle / 90)) * 90
 
-        self.player.rotate_sprite(self.angle)
+        self.player.rotate_sprite(self.rounded_angle)
 
         # handle events in game loop
         for e in pygame.event.get():
@@ -86,6 +87,9 @@ class Game:
                     self.player.move(dy=1)
                 if e.key == pygame.K_UP or e.key == pygame.K_w:
                     self.player.move(dy=-1)
+
+        if pygame.mouse.get_pressed() == (1, 0, 0) or pygame.key.get_pressed()[pygame.K_SPACE]:
+            self.player.is_shooting()
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):

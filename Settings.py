@@ -9,6 +9,12 @@ FPS = 60
 # Player/Tank
 TANKSCALE = 0.75
 
+# Bullet/shooting
+SHOOT_COOLDOWN = 10
+BULLET_SCALE = 1
+BULLET_SPEED = 2
+BULLET_LIFETIME = 2
+
 # grid
 BACKGROUND_IMAGE = 'Assets/Maps/BasicTestBackground.png'
 MAP_FILENAME = 'Assets/Maps/TextMap.txt'
