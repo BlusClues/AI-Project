@@ -31,6 +31,7 @@ class Game:
 
         self.load()
 
+    # runs when the game loads
     def load(self):
         game_dir = path.dirname(__file__)
         self.map = Map(path.join(game_dir, MAP_FILENAME))
@@ -66,31 +67,33 @@ class Game:
         self.all_sprites.update()
 
     def events(self):
-        self.mouse_coords = pygame.mouse.get_pos()
-        self.x_change_mouse_player = (self.mouse_coords[0] - self.player.rect.centerx)
-        self.y_change_mouse_player = (self.mouse_coords[1] - self.player.rect.centery)
-        self.angle = math.degrees(math.atan2(self.y_change_mouse_player, -self.x_change_mouse_player))
-        self.rounded_angle = (round(self.angle / 90)) * 90
-
-        self.player.rotate_sprite(self.rounded_angle)
-
         # handle events in game loop
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 self.quit()
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_LEFT or e.key == pygame.K_a:
+                    self.current_angle = 0
+                    self.player.rotate_sprite(self.current_angle)
                     self.player.move(dx=-1)
                 if e.key == pygame.K_RIGHT or e.key == pygame.K_d:
+                    self.current_angle = 180
+                    self.player.rotate_sprite(self.current_angle)
                     self.player.move(dx=1)
                 if e.key == pygame.K_DOWN or e.key == pygame.K_s:
+                    self.current_angle = 90
+                    self.player.rotate_sprite(self.current_angle)
                     self.player.move(dy=1)
                 if e.key == pygame.K_UP or e.key == pygame.K_w:
+                    self.current_angle = -90
+                    self.player.rotate_sprite(self.current_angle)
                     self.player.move(dy=-1)
 
+        # detects button for shooting
         if pygame.mouse.get_pressed() == (1, 0, 0) or pygame.key.get_pressed()[pygame.K_SPACE]:
-            self.player.is_shooting()
+            self.player.shoot()
 
+    # draw the grid for the map
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
             pygame.draw.line(self.screen, BLACK, (x, 0), (x, HEIGHT))
