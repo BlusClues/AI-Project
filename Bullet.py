@@ -4,7 +4,7 @@ import math
 from Settings import *
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, angle, groups):
+    def __init__(self, game, x, y, angle, groups, owner):
         super().__init__(groups)
         self.game = game
         self.source_image = pygame.image.load('Assets/BlueBullet.png').convert_alpha()
@@ -19,6 +19,7 @@ class Bullet(pygame.sprite.Sprite):
         self.x_vel = math.cos(self.angle * (2 * math.pi / 360)) * self.speed
         self.y_vel = math.sin(self.angle * (2 * math.pi / 360)) * self.speed
         self.bullet_life = BULLET_LIFETIME
+        self.owner = owner
 
     # calculate the bullets movement
     def bullet_movement(self):

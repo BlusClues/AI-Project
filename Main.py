@@ -1,6 +1,5 @@
 ﻿import pygame
 import sys
-import math
 
 from os import path
 
@@ -40,6 +39,7 @@ class Game:
         # create a new instance of the game
         self.all_sprites = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
+        self.bullets = pygame.sprite.Group()
 
         # create sprites
         for row, tiles in enumerate(self.map.data):
@@ -47,7 +47,7 @@ class Game:
                 if tile == '*':
                     Wall(self, col, row)
                 elif tile == 'P':
-                    self.player = Player(self, col, row)
+                    self.player = Player(self, col, row, 1)
 
     def run(self):
         # game loop
@@ -106,6 +106,7 @@ class Game:
         self.screen.blit(self.background, (0, 0))
         self.draw_grid()
         self.all_sprites.draw(self.screen)
+        self.player.display_health(BLUETANK_HEALTH_X, BLUETANK_HEALTH_Y)
 
         # flip display after drawing
         pygame.display.flip()

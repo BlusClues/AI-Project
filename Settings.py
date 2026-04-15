@@ -8,6 +8,7 @@ FPS = 60
 
 # Player/Tank
 TANKSCALE = 0.75
+TANK_HEALTH = 3
 
 # Bullet/shooting
 SHOOT_COOLDOWN = 20
@@ -21,6 +22,11 @@ MAP_FILENAME = 'Assets/Maps/TextMap.txt'
 TILESIZE = 32
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
+
+# ui elements
+BLUETANK_HEALTH_X = 100
+BLUETANK_HEALTH_Y = 100
+HEART_SCALE = 2
 
 # colours
 WHITE = (255, 255, 255)
