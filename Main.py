@@ -29,6 +29,7 @@ class Game:
         pygame.key.set_repeat(500, 10)
 
         self.load()
+        self.paused = False
 
     # runs when the game loads
     def load(self):
@@ -64,7 +65,8 @@ class Game:
 
     def update(self):
         # update items in the game loop
-        self.all_sprites.update()
+        if not self.paused:
+            self.all_sprites.update()
 
     def events(self):
         # handle events in game loop

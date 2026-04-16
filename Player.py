@@ -20,6 +20,8 @@ class Player(pygame.sprite.Sprite):
         self.health = TANK_HEALTH
         self.heart = pygame.transform.rotozoom(pygame.image.load('Assets/Heart.png').convert_alpha(), 0, HEART_SCALE)
         self.empty_heart = pygame.transform.rotozoom(pygame.image.load('Assets/HeartEmpty.png').convert_alpha(), 0, HEART_SCALE)
+        self.my_font = pygame.font.SysFont("Comic Sans", 36)
+        self.text_surface = self.my_font.render(TANK_COLOURS[self.id], True, BLUE)
 
     # detect collision with walls
     def colliding_with_walls(self, dx=0, dy=0):
@@ -50,16 +52,20 @@ class Player(pygame.sprite.Sprite):
         self.health -= 1
         if self.health <= 0:
             self.kill()
+            self.game.paused = True
 
     # to dynamically display the current health
     def display_health(self, x, y):
+        # tank colour name display
+        self.game.screen.blit(self.text_surface, (x + (TILESIZE / 4), y - TILESIZE - (TILESIZE / 2)))
+
+        # Changing the hearts depending on health
         for i in range(TANK_HEALTH):
             heart_x = x + i * TILESIZE
             if i < self.health:
                 self.game.screen.blit(self.heart, (heart_x - 4, y - 4))
             else:
-                self.game.screen.blit(self.empty_heart, (heart_x, y))
-
+                self.game.screen.blit(self.empty_heart, (heart_x - 4, y - 4))
 
     def update(self):
         self.rect.x = self.x * TILESIZE

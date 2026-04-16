@@ -6,9 +6,18 @@ HEIGHT = 720
 
 FPS = 60
 
+# Basic colours
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+TAN = (234, 219, 198)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
+
 # Player/Tank
 TANKSCALE = 0.75
 TANK_HEALTH = 3
+TANK_COLOURS = {1: "Blue", 2: "Red"}
 
 # Bullet/shooting
 SHOOT_COOLDOWN = 20
@@ -27,9 +36,3 @@ GRIDHEIGHT = HEIGHT / TILESIZE
 BLUETANK_HEALTH_X = 100
 BLUETANK_HEALTH_Y = 100
 HEART_SCALE = 2
-
-# colours
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GREEN = (0, 255, 0)
-TAN = (234, 219, 198)
