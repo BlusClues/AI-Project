@@ -78,6 +78,6 @@ class Player(pygame.sprite.Sprite):
         # stops ability to shot yourself
         if pygame.sprite.spritecollide(self, self.game.bullets, False):
             for bullet in self.game.bullets:
-                if bullet.owner == self.id:
+                if bullet.owner != self.id:
                     self.was_shot()
                     bullet.kill()
