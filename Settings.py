@@ -18,6 +18,8 @@ RED = (255, 0, 0)
 TANKSCALE = 0.75
 TANK_HEALTH = 3
 TANK_COLOURS = {1: "Blue", 2: "Red"}
+BLUE_TANK_SPRITE_PATH = 'Assets/BlueTank.png'
+BLUE_BULLET_SPRITE_PATH = 'Assets/BlueBullet.png'
 
 # Bullet/shooting
 SHOOT_COOLDOWN = 20

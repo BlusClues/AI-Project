@@ -4,10 +4,10 @@ import math
 from Settings import *
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, game, x, y, angle, groups, owner):
+    def __init__(self, game, x, y, angle, groups, owner, colour):
         super().__init__(groups)
         self.game = game
-        self.source_image = pygame.image.load('Assets/BlueBullet.png').convert_alpha()
+        self.source_image = pygame.image.load(colour).convert_alpha()
         self.source_image = pygame.transform.rotozoom(self.source_image, 90, BULLET_SCALE)
         self.image = self.source_image.copy()
         self.rect = self.source_image.get_rect()

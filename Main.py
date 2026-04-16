@@ -11,6 +11,8 @@ from TileMap import Map
 # resources
 # https://www.youtube.com/watch?v=8-hNcOmkZtg
 # https://www.youtube.com/watch?v=wu1cd1Qycz4&t=3s
+# https://www.youtube.com/watch?v=PfxwNxXveQk
+# https://www.redblobgames.com/pathfinding/a-star/implementation.html
 
 class Game:
     def __init__(self):
@@ -29,7 +31,7 @@ class Game:
         pygame.key.set_repeat(500, 10)
 
         self.load()
-        self.paused = False
+        # self.paused = False
 
     # runs when the game loads
     def load(self):
@@ -55,7 +57,6 @@ class Game:
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
-            self.events()
             self.update()
             self.draw()
 
@@ -65,35 +66,8 @@ class Game:
 
     def update(self):
         # update items in the game loop
-        if not self.paused:
-            self.all_sprites.update()
-
-    def events(self):
-        # handle events in game loop
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT:
-                self.quit()
-            if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_LEFT or e.key == pygame.K_a:
-                    self.current_angle = 0
-                    self.player.rotate_sprite(self.current_angle)
-                    self.player.move(dx=-1)
-                if e.key == pygame.K_RIGHT or e.key == pygame.K_d:
-                    self.current_angle = 180
-                    self.player.rotate_sprite(self.current_angle)
-                    self.player.move(dx=1)
-                if e.key == pygame.K_DOWN or e.key == pygame.K_s:
-                    self.current_angle = 90
-                    self.player.rotate_sprite(self.current_angle)
-                    self.player.move(dy=1)
-                if e.key == pygame.K_UP or e.key == pygame.K_w:
-                    self.current_angle = -90
-                    self.player.rotate_sprite(self.current_angle)
-                    self.player.move(dy=-1)
-
-        # detects button for shooting
-        if pygame.mouse.get_pressed() == (1, 0, 0) or pygame.key.get_pressed()[pygame.K_SPACE]:
-            self.player.shoot()
+        # if not self.paused:
+        self.all_sprites.update()
 
     # draw the grid for the map
     def draw_grid(self):
