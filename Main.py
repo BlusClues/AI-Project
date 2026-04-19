@@ -6,6 +6,7 @@ from os import path
 from Obstacles import Wall
 from Settings import *
 from Player import Player
+from AITank import AITank
 from TileMap import Map
 
 # resources
@@ -51,6 +52,8 @@ class Game:
                     Wall(self, col, row)
                 elif tile == 'P':
                     self.player = Player(self, col, row, 1)
+                elif tile == 'T':
+                    self.ai_tank = AITank(self, col, row, 2)
 
     def run(self):
         # game loop

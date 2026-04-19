@@ -20,6 +20,9 @@ TANK_HEALTH = 3
 TANK_COLOURS = {1: "Blue", 2: "Red"}
 BLUE_TANK_SPRITE_PATH = 'Assets/BlueTank.png'
 BLUE_BULLET_SPRITE_PATH = 'Assets/BlueBullet.png'
+RED_TANK_SPRITE_PATH = 'Assets/RedTank.png'
+RED_BULLET_SPRITE_PATH = 'Assets/RedBullet.png'
+MOVE_COOLDOWN = 30
 
 # Bullet/shooting
 SHOOT_COOLDOWN = 20

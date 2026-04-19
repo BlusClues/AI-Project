@@ -15,6 +15,7 @@ class Tank(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.shoot_cooldown = 0
+        self.move_cooldown = 0
         self.angle = 0
         self.health = TANK_HEALTH
         self.heart = pygame.transform.rotozoom(pygame.image.load('Assets/Heart.png').convert_alpha(), 0, HEART_SCALE)
@@ -32,9 +33,11 @@ class Tank(pygame.sprite.Sprite):
 
     # calculate movement for tanks
     def move(self, dx=0, dy=0):
-        if not self.colliding_with_walls(dx, dy):
-            self.x += dx
-            self.y += dy
+        if self.move_cooldown == 0:
+            self.move_cooldown = MOVE_COOLDOWN
+            if not self.colliding_with_walls(dx, dy):
+                self.x += dx
+                self.y += dy
 
     # rotate the sprite depending on movement direction
     def rotate_sprite(self, angle):
@@ -74,6 +77,10 @@ class Tank(pygame.sprite.Sprite):
         # adds cooldown to shooting to stop rapid fire
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
+
+        # adds cooldown for movement to prevent instant moves
+        if self.move_cooldown > 0:
+            self.move_cooldown -= 1
 
         # stops ability to shot yourself
         for bullet in self.game.bullets:
