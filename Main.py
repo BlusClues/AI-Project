@@ -44,6 +44,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
+        self.tanks = pygame.sprite.Group()
 
         # create sprites
         for row, tiles in enumerate(self.map.data):

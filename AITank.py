@@ -16,7 +16,7 @@ class AITank(Tank):
         possible_neighbours = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
         moveable_neighbours = []
         for neighbour in possible_neighbours:
-            if not self.colliding_with_walls(neighbour[0], neighbour[1]):
+            if not self.colliding_with_objects(neighbour[0], neighbour[1]):
                 moveable_neighbours.append(neighbour)
 
         return moveable_neighbours

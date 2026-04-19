@@ -23,11 +23,16 @@ class Tank(pygame.sprite.Sprite):
         self.my_font = pygame.font.SysFont("Comic Sans", 36)
         self.text_surface = self.my_font.render(TANK_COLOURS[self.id], True, text_colour)
         self.bullet_colour = bullet_colour
+        self.game.tanks.add(self)
 
     # detect collision with walls
-    def colliding_with_walls(self, dx=0, dy=0):
+    def colliding_with_objects(self, dx=0, dy=0):
         for wall in self.game.walls:
             if (self.x + dx) == wall.x and (self.y + dy) == wall.y:
+                return True
+
+        for tank in self.game.tanks:
+            if (self.x + dx) == tank.x and (self.y + dy) == tank.y:
                 return True
         return False
 
@@ -35,7 +40,7 @@ class Tank(pygame.sprite.Sprite):
     def move(self, dx=0, dy=0):
         if self.move_cooldown == 0:
             self.move_cooldown = MOVE_COOLDOWN
-            if not self.colliding_with_walls(dx, dy):
+            if not self.colliding_with_objects(dx, dy):
                 self.x += dx
                 self.y += dy
 
