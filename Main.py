@@ -2,6 +2,7 @@
 import sys
 
 from os import path
+from PIL import Image, ImageDraw
 
 from Obstacles import Wall
 from Settings import *
@@ -15,6 +16,9 @@ from TileMap import Map
 # https://www.youtube.com/watch?v=PfxwNxXveQk
 # https://www.redblobgames.com/pathfinding/a-star/implementation.html
 # https://python-course.eu/applications-python/finite-state-machine.php
+# https://www.geeksforgeeks.org/python/create-and-save-animated-gif-with-python-pillow/
+# https://www.youtube.com/watch?v=lecAm3eYCeY
+# https://www.pygame.org/docs/ref/image.html#pygame.image.tostring
 
 class Game:
     def __init__(self):
@@ -35,6 +39,10 @@ class Game:
         self.load()
         self.wall_positions = []
         # self.paused = False
+
+        # gif variables
+        self.images = []
+        self.image_cooldown = IMAGE_COOLDOWN
 
     # runs when the game loads
     def load(self):
@@ -76,6 +84,10 @@ class Game:
         # if not self.paused:
         self.all_sprites.update()
 
+        # delays the screenshot taking to reduce file size
+        if self.image_cooldown > 0:
+            self.image_cooldown -= 1
+
     # draw the grid for the map
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
@@ -95,9 +107,19 @@ class Game:
         # flip display after drawing
         pygame.display.flip()
 
+        # takes screenshots of the game to create gif
+        if self.image_cooldown == 0:
+            self.image_cooldown = IMAGE_COOLDOWN
+            game_image = pygame.image.tostring(self.screen, "RGB", )
+            formated_image = Image.frombytes("RGB", (WIDTH, HEIGHT), game_image)
+            self.images.append(formated_image)
+
 if __name__ == "__main__":
     game = Game()
 
     while True:
-        game.new_instance()
-        game.run()
+        try:
+            game.new_instance()
+            game.run()
+        finally:
+            game.images[0].save("Test.gif", save_all=True, append_images=game.images[1:], duration=100, loop=0)
