@@ -24,6 +24,7 @@ class Tank(pygame.sprite.Sprite):
         self.text_surface = self.my_font.render(TANK_COLOURS[self.id], True, text_colour)
         self.bullet_colour = bullet_colour
         self.game.tanks.add(self)
+        self.hits = []
 
     # detect collision with walls
     def colliding_with_objects(self, dx=0, dy=0):
@@ -88,8 +89,9 @@ class Tank(pygame.sprite.Sprite):
             self.move_cooldown -= 1
 
         # stops ability to shot yourself
-        for bullet in self.game.bullets:
-            if pygame.sprite.spritecollide(self, self.game.bullets, False):
-                if bullet.owner != self.id:
-                    self.was_shot()
-                    bullet.kill()
+        hits = pygame.sprite.spritecollide(self, self.game.bullets, False)
+
+        for bullet in hits:
+            if bullet.owner != self.id:
+                self.was_shot()
+                bullet.kill()

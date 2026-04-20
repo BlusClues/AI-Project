@@ -1,6 +1,4 @@
-﻿from sys import implementation
-
-import pygame
+﻿import pygame
 import heapq
 
 from Settings import *
@@ -57,6 +55,19 @@ class AITank(Tank):
             closest_position = moveable_flanks[0]
 
         return closest_position
+
+    def raycast(self, dx, dy, distance):
+        for raycast_distance in range(1, distance):
+            current_position = ((dx * raycast_distance) + self.x, (dy * raycast_distance) + self.y)
+            if 0 <= current_position[0] < GRIDWIDTH and 0 <= current_position[1] < GRIDHEIGHT:
+                if current_position not in self.game.wall_positions:
+                    for tank in self.game.tanks:
+                        if (current_position[0] == tank.x and current_position[1] == tank.y) and self.id != tank.id:
+                            self.shoot()
+                else:
+                    break
+            else:
+                break
 
     # calculate the shortest distance to goal
     # using manhattan distance calculation
@@ -150,6 +161,7 @@ class AITank(Tank):
                     self.current_angle = -90
                     self.rotate_sprite(self.current_angle)
 
+            self.raycast(dx, dy, 6)
             self.move(dx, dy)
             # remove coordinate once AI has reached it
             if self.x == coordinate_to_move[0] and self.y == coordinate_to_move[1]:

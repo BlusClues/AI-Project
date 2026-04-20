@@ -89,7 +89,8 @@ class Game:
         self.screen.blit(self.background, (0, 0))
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        self.player.display_health(BLUETANK_HEALTH_X, BLUETANK_HEALTH_Y)
+        self.player.display_health(BLUETANK_HEALTH_X, TANK_HEALTH_Y)
+        self.ai_tank.display_health(REDTANK_HEALTH_X, TANK_HEALTH_Y)
 
         # flip display after drawing
         pygame.display.flip()
