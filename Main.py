@@ -14,6 +14,7 @@ from TileMap import Map
 # https://www.youtube.com/watch?v=wu1cd1Qycz4&t=3s
 # https://www.youtube.com/watch?v=PfxwNxXveQk
 # https://www.redblobgames.com/pathfinding/a-star/implementation.html
+# https://python-course.eu/applications-python/finite-state-machine.php
 
 class Game:
     def __init__(self):

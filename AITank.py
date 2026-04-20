@@ -1,4 +1,6 @@
-﻿import pygame
+﻿from sys import implementation
+
+import pygame
 import heapq
 
 from Settings import *
@@ -22,6 +24,38 @@ class AITank(Tank):
                     moveable_neighbours.append((nx, ny))
 
         return moveable_neighbours
+
+    # calculates the AIs best flank to change behaviour of AI
+    def calculate_flank(self, x, y, distance):
+        flank_distance = distance
+        possible_flanks = [(x + flank_distance, y), (x - flank_distance, y), (x, y + flank_distance), (x, y - flank_distance)]
+        moveable_flanks = []
+        closest_difference = float('inf')
+        # check that positions are not walls
+        for nx, ny in possible_flanks:
+            if 0 <= nx < GRIDWIDTH and 0 <= ny < GRIDHEIGHT:
+                if (nx, ny) not in self.game.wall_positions:
+                    moveable_flanks.append((nx, ny))
+
+        # recursively calls function if all surrounding are walls
+        if flank_distance > 1:
+            if moveable_flanks == []:
+                return self.calculate_flank(x, y, flank_distance - 1)
+        else:
+            return x, y
+
+        # calculate the closest of the flanks so the AI doesn't drive around enemy
+        if len(moveable_flanks) > 1:
+            closest_position = moveable_flanks[0]
+            for fx, fy in moveable_flanks:
+                difference = abs(self.x - fx) + abs(self.y - fy)
+                if difference < closest_difference or closest_difference is None:
+                    closest_difference = abs(self.x - closest_position[0]) + abs(self.y - closest_position[1])
+                    closest_position = (fx, fy)
+        elif len(moveable_flanks) == 1:
+            closest_position = moveable_flanks[0]
+
+        return closest_position
 
     # calculate the shortest distance to goal
     # using manhattan distance calculation
@@ -67,17 +101,33 @@ class AITank(Tank):
     # AI LOOP
     def update(self):
         super().update()
+        # start of FSM implementation
+        # determine how far enemy is
+        distance = self.heuristic((self.x, self.y), (self.game.player.x, self.game.player.y))
+
+        # decide state based on distance
+        if distance > 6:
+            self.state = "chase"
+        else:
+            self.state = "flank"
+
+        # get the target based on the state
+        if self.state == "chase":
+            target = (self.game.player.x, self.game.player.y)
+        if self.state == "flank":
+            target = self.calculate_flank(self.game.player.x, self.game.player.y, 3)
+
+        # start of a star
         # update the path if the target moves
         if self.last_enemy_pos != (self.game.player.x, self.game.player.y):
             self.path = []
 
         # if AI has reached its destination make new path
         if self.path == []:
-            goal = (self.game.player.x, self.game.player.y)
-            self.last_enemy_pos = goal
-            came_from, cost_so_far = self.a_star_search((self.x, self.y), goal)
-            self.path = self.reconstruct_path(came_from, goal)
-        # if AI is still going calculate movement
+            self.last_enemy_pos = (self.game.player.x, self.game.player.y)
+            came_from, cost_so_far = self.a_star_search((self.x, self.y), target)
+            self.path = self.reconstruct_path(came_from, target)
+        # if AI is still following current path calculate movement
         elif self.path != []:
             coordinate_to_move = next(iter(self.path))
             dx = coordinate_to_move[0] - self.x
