@@ -32,6 +32,7 @@ class Game:
         pygame.key.set_repeat(500, 10)
 
         self.load()
+        self.wall_positions = []
         # self.paused = False
 
     # runs when the game loads
@@ -51,6 +52,7 @@ class Game:
             for col, tile in enumerate(tiles):
                 if tile == '*':
                     Wall(self, col, row)
+                    self.wall_positions.append((col, row))
                 elif tile == 'P':
                     self.player = Player(self, col, row, 1)
                 elif tile == 'T':

@@ -10,14 +10,16 @@ class AITank(Tank):
         self.x = x
         self.y = y
         self.path = []
+        self.last_enemy_pos = None
 
     # checking neighbours function
     def check_neighbours(self, x, y):
         possible_neighbours = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
         moveable_neighbours = []
-        for neighbour in possible_neighbours:
-            if not self.colliding_with_objects(neighbour[0], neighbour[1]):
-                moveable_neighbours.append(neighbour)
+        for nx, ny in possible_neighbours:
+            if 0 <= nx < GRIDWIDTH and 0 <= ny < GRIDHEIGHT:
+                if (nx, ny) not in self.game.wall_positions:
+                    moveable_neighbours.append((nx, ny))
 
         return moveable_neighbours
 
@@ -65,9 +67,14 @@ class AITank(Tank):
     # AI LOOP
     def update(self):
         super().update()
+        # update the path if the target moves
+        if self.last_enemy_pos != (self.game.player.x, self.game.player.y):
+            self.path = []
+
         # if AI has reached its destination make new path
         if self.path == []:
             goal = (self.game.player.x, self.game.player.y)
+            self.last_enemy_pos = goal
             came_from, cost_so_far = self.a_star_search((self.x, self.y), goal)
             self.path = self.reconstruct_path(came_from, goal)
         # if AI is still going calculate movement
