@@ -13,6 +13,7 @@ class AITank(Tank):
         self.y = y
         self.path = []
         self.last_enemy_pos = None
+        self.current_angle = 90
 
     # checking neighbours function
     def check_neighbours(self, x, y):
@@ -127,11 +128,28 @@ class AITank(Tank):
             self.last_enemy_pos = (self.game.player.x, self.game.player.y)
             came_from, cost_so_far = self.a_star_search((self.x, self.y), target)
             self.path = self.reconstruct_path(came_from, target)
+            self.rotate_sprite(self.current_angle) # not sure if this helps, but I want to believe it does lol
         # if AI is still following current path calculate movement
         elif self.path != []:
             coordinate_to_move = next(iter(self.path))
             dx = coordinate_to_move[0] - self.x
             dy = coordinate_to_move[1] - self.y
+
+            # rotate the sprite before moving
+            match (dx, dy):
+                case (1,0):
+                    self.current_angle = 180
+                    self.rotate_sprite(self.current_angle)
+                case (-1,0):
+                    self.current_angle = 0
+                    self.rotate_sprite(self.current_angle)
+                case (0,1):
+                    self.current_angle = 90
+                    self.rotate_sprite(self.current_angle)
+                case (0,-1):
+                    self.current_angle = -90
+                    self.rotate_sprite(self.current_angle)
+
             self.move(dx, dy)
             # remove coordinate once AI has reached it
             if self.x == coordinate_to_move[0] and self.y == coordinate_to_move[1]:
