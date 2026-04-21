@@ -23,12 +23,13 @@ BLUE_BULLET_SPRITE_PATH = 'Assets/BlueBullet.png'
 RED_TANK_SPRITE_PATH = 'Assets/RedTank.png'
 RED_BULLET_SPRITE_PATH = 'Assets/RedBullet.png'
 MOVE_COOLDOWN = 30
+RAYCAST_DISTANCE = 6
 
 # Bullet/shooting
 SHOOT_COOLDOWN = 20
 BULLET_SCALE = 1
 BULLET_SPEED = 5
-BULLET_LIFETIME = 5
+BULLET_LIFETIME = 1
 
 # grid
 BACKGROUND_IMAGE = 'Assets/Maps/BasicTestBackground.png'

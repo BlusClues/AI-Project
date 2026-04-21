@@ -56,6 +56,42 @@ class AITank(Tank):
 
         return closest_position
 
+    def calculate_flee(self, x, y, distance):
+        flee_distance = distance
+        if self.health == 1:
+            possible_flee_positions = [(x + flee_distance, y + flee_distance), (x - flee_distance, y - flee_distance),
+                                       (x - flee_distance, y + flee_distance), (x + flee_distance, y - flee_distance)]
+            moveable_flee_positions = []
+            closest_difference = float('inf')
+            # check that positions are not walls
+            for nx, ny in possible_flee_positions:
+                if 0 <= nx < GRIDWIDTH and 0 <= ny < GRIDHEIGHT:
+                    if (nx, ny) not in self.game.wall_positions:
+                        moveable_flee_positions.append((nx, ny))
+
+            # recursive call that checks for a valid flee position with no walls
+            if flee_distance > 1:
+                if moveable_flee_positions == []:
+                    return self.calculate_flee(x, y, flee_distance - 1)
+            else:
+                return x, y
+
+            # calculate the closest of the flee position so the AI doesn't drive around enemy
+            if len(moveable_flee_positions) > 1:
+                closest_position = moveable_flee_positions[0]
+                for fx, fy in moveable_flee_positions:
+                    difference = abs(self.x - fx) + abs(self.y - fy)
+                    if difference < closest_difference or closest_difference is None:
+                        closest_difference = abs(self.x - closest_position[0]) + abs(self.y - closest_position[1])
+                        closest_position = (fx, fy)
+            elif len(moveable_flee_positions) == 1:
+                closest_position = moveable_flee_positions[0]
+
+            return closest_position
+        else:
+            return x, y
+
+    # raycast locations ahead of the tank to spot enemy for shooting
     def raycast(self, dx, dy, distance):
         for raycast_distance in range(1, distance):
             current_position = ((dx * raycast_distance) + self.x, (dy * raycast_distance) + self.y)
@@ -120,6 +156,8 @@ class AITank(Tank):
         # decide state based on distance
         if distance > 6:
             self.state = "chase"
+        elif self.health <= 2:
+            self.state = "flee"
         else:
             self.state = "flank"
 
@@ -128,6 +166,8 @@ class AITank(Tank):
             target = (self.game.player.x, self.game.player.y)
         if self.state == "flank":
             target = self.calculate_flank(self.game.player.x, self.game.player.y, 3)
+        if self.state == "flee":
+            target = self.calculate_flee(self.game.player.x, self.game.player.y, 5)
 
         # start of a star
         # update the path if the target moves
@@ -161,7 +201,7 @@ class AITank(Tank):
                     self.current_angle = -90
                     self.rotate_sprite(self.current_angle)
 
-            self.raycast(dx, dy, 6)
+            self.raycast(dx, dy, RAYCAST_DISTANCE)
             self.move(dx, dy)
             # remove coordinate once AI has reached it
             if self.x == coordinate_to_move[0] and self.y == coordinate_to_move[1]:
