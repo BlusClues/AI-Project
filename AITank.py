@@ -56,7 +56,7 @@ class AITank(Tank):
             closest_position = moveable_flanks[0]
             for fx, fy in moveable_flanks:
                 difference = abs(self.x - fx) + abs(self.y - fy)
-                random_flank = random.randint(1, 6)
+                random_flank = random.randint(1, 6) # role either closest flank or random one
                 if random_flank == 1:
                     if difference < closest_difference or closest_difference is None:
                         closest_difference = abs(self.x - closest_position[0]) + abs(self.y - closest_position[1])
@@ -68,6 +68,7 @@ class AITank(Tank):
 
         return closest_position
 
+    # calculate the position the tank flees to
     def calculate_flee(self, x, y, distance):
         flee_distance = distance
         if self.health == 1:
@@ -161,13 +162,14 @@ class AITank(Tank):
     # AI LOOP
     def update(self):
         super().update()
+        # Initally add target or if tank is missing one
         if self.target is None or not self.target.alive():
             for tank in self.game.tanks:
                 if self.id != tank.id:
                     self.target = tank
 
+        # update the path if the target moves
         if self.target is not None:
-            # update the path if the target moves
             if self.last_enemy_pos is None:
                 self.last_enemy_pos = (self.target.x, self.target.y)
                 self.path = []
@@ -188,6 +190,7 @@ class AITank(Tank):
             else:
                 self.state = "flank"
 
+            # clear path if state changes
             if self.state != self.last_state:
                 self.path = []
                 self.last_state = self.state

@@ -1,4 +1,6 @@
-﻿import pygame
+﻿from turtledemo.sorting_animate import show_text
+
+import pygame
 
 from Settings import *
 from Bullet import Bullet
@@ -26,7 +28,7 @@ class Tank(pygame.sprite.Sprite):
         self.game.tanks.add(self)
         self.hits = []
 
-    # detect collision with walls
+    # detect collision with walls and other tanks
     def colliding_with_objects(self, dx=0, dy=0):
         for wall in self.game.walls:
             if (self.x + dx) == wall.x and (self.y + dy) == wall.y:
@@ -57,6 +59,7 @@ class Tank(pygame.sprite.Sprite):
             spawn_x, spawn_y = self.rect.center
             self.bullet = Bullet(self.game, spawn_x, spawn_y, self.current_angle, (self.groups, self.game.bullets), self.id, self.bullet_colour)
 
+    # subtract health if shot
     def was_shot(self):
         self.health -= 1
         if self.health <= 0:

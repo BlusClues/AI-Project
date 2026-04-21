@@ -90,6 +90,7 @@ class Game:
         if self.image_cooldown > 0:
             self.image_cooldown -= 1
 
+        # close game when a tank dies
         if len(self.tanks) <= 1:
             self.quit()
 
