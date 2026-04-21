@@ -90,6 +90,9 @@ class Game:
         if self.image_cooldown > 0:
             self.image_cooldown -= 1
 
+        if len(self.tanks) <= 1:
+            self.quit()
+
     # draw the grid for the map
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):
