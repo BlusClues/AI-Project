@@ -71,7 +71,7 @@ class AITank(Tank):
     # calculate the position the tank flees to
     def calculate_flee(self, x, y, distance):
         flee_distance = distance
-        if self.health == 1:
+        if self.health == self.flee_health_limit:
             possible_flee_positions = [(x + flee_distance, y + flee_distance), (x - flee_distance, y - flee_distance),
                                        (x - flee_distance, y + flee_distance), (x + flee_distance, y - flee_distance)]
             moveable_flee_positions = []

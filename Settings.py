@@ -1,8 +1,8 @@
 ﻿# Game settings
 TITLE = "Tank Game"
 
-WIDTH = 1280
-HEIGHT = 720
+WIDTH = 1920
+HEIGHT = 1080
 
 FPS = 60
 
@@ -34,8 +34,8 @@ BULLET_SPEED = 5
 BULLET_LIFETIME = 1
 
 # grid
-BACKGROUND_IMAGE = 'Assets/Maps/BasicTestBackground.png'
-MAP_FILENAME = 'Assets/Maps/TextMap.txt'
+BACKGROUND_IMAGE = 'Assets/Maps/test_image2.jpg'
+MAP_FILENAME = 'Assets/Maps/GeneratedMap.txt'
 TILESIZE = 32
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE

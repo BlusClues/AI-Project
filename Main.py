@@ -2,13 +2,14 @@
 import sys
 
 from os import path
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from Obstacles import Wall
 from Settings import *
 from Player import Player
 from AITank import AITank
 from TileMap import Map
+from map_generator import generate_map
 
 # resources
 # https://www.youtube.com/watch?v=8-hNcOmkZtg
@@ -121,6 +122,14 @@ class Game:
             self.images.append(formated_image)
 
 if __name__ == "__main__":
+    # generate map from image
+    success, result = generate_map(BACKGROUND_IMAGE, MAP_FILENAME)
+
+    if not success:
+        print(f"CRITICAL ERROR: Map generation failed! Reason: {result}")
+        sys.exit()
+
+    # run the game
     game = Game()
 
     while True:
