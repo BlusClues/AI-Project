@@ -4,8 +4,9 @@ from Settings import *
 from Tank import Tank
 
 class Player(Tank):
-    def __init__(self, game, x, y, id):
+    def __init__(self, game, x, y, id, health_x_pos):
         super().__init__(game, x, y, id, BLUE_TANK_SPRITE_PATH, BLUE, BLUE_BULLET_SPRITE_PATH)
+        self.health_x_pos = health_x_pos
 
     def events(self):
         # handle events in game loop

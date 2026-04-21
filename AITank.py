@@ -1,17 +1,25 @@
 ﻿import pygame
 import heapq
+import random
 
 from Settings import *
 from Tank import Tank
 
 class AITank(Tank):
-    def __init__(self, game, x, y, id):
-        super().__init__(game, x, y, id, RED_TANK_SPRITE_PATH, RED, RED_BULLET_SPRITE_PATH)
+    def __init__(self, game, x, y, id, tank_sprite_path, tank_colour, tank_bullet_path, flee_health_limit, flank_distance, health_x_pos, path_recalculation_theshold, flank_offset):
+        super().__init__(game, x, y, id, tank_sprite_path, tank_colour, tank_bullet_path)
         self.x = x
         self.y = y
         self.path = []
         self.last_enemy_pos = None
         self.current_angle = 90
+        self.target = None
+        self.flee_health_limit = flee_health_limit
+        self.flank_distance = flank_distance
+        self.health_x_pos = health_x_pos
+        self.last_state = "chase"
+        self.path_recalculation_theshold = path_recalculation_theshold
+        self.flank_offset = flank_offset
 
     # checking neighbours function
     def check_neighbours(self, x, y):
@@ -48,9 +56,13 @@ class AITank(Tank):
             closest_position = moveable_flanks[0]
             for fx, fy in moveable_flanks:
                 difference = abs(self.x - fx) + abs(self.y - fy)
-                if difference < closest_difference or closest_difference is None:
-                    closest_difference = abs(self.x - closest_position[0]) + abs(self.y - closest_position[1])
-                    closest_position = (fx, fy)
+                random_flank = random.randint(1, 6)
+                if random_flank == 1:
+                    if difference < closest_difference or closest_difference is None:
+                        closest_difference = abs(self.x - closest_position[0]) + abs(self.y - closest_position[1])
+                        closest_position = (fx, fy)
+                else:
+                    return random.choice(moveable_flanks)
         elif len(moveable_flanks) == 1:
             closest_position = moveable_flanks[0]
 
@@ -149,60 +161,75 @@ class AITank(Tank):
     # AI LOOP
     def update(self):
         super().update()
-        # start of FSM implementation
-        # determine how far enemy is
-        distance = self.heuristic((self.x, self.y), (self.game.player.x, self.game.player.y))
+        if self.target is None or not self.target.alive():
+            for tank in self.game.tanks:
+                if self.id != tank.id:
+                    self.target = tank
 
-        # decide state based on distance
-        if distance > 6:
-            self.state = "chase"
-        elif self.health <= 2:
-            self.state = "flee"
-        else:
-            self.state = "flank"
+        if self.target is not None:
+            # update the path if the target moves
+            if self.last_enemy_pos is None:
+                self.last_enemy_pos = (self.target.x, self.target.y)
+                self.path = []
+            else:
+                distance = self.heuristic(self.last_enemy_pos, (self.target.x, self.target.y))
+                if distance > self.path_recalculation_theshold:
+                    self.path = []
 
-        # get the target based on the state
-        if self.state == "chase":
-            target = (self.game.player.x, self.game.player.y)
-        if self.state == "flank":
-            target = self.calculate_flank(self.game.player.x, self.game.player.y, 3)
-        if self.state == "flee":
-            target = self.calculate_flee(self.game.player.x, self.game.player.y, 5)
+            # start of FSM implementation
+            # determine how far away the enemy is
+            distance_to_target = self.heuristic((self.x, self.y), (self.target.x, self.target.y))
 
-        # start of a star
-        # update the path if the target moves
-        if self.last_enemy_pos != (self.game.player.x, self.game.player.y):
-            self.path = []
+            # decide state based on distance
+            if distance_to_target > self.flank_distance:
+                self.state = "chase"
+            elif self.health <= self.flee_health_limit:
+                self.state = "flee"
+            else:
+                self.state = "flank"
 
-        # if AI has reached its destination make new path
-        if self.path == []:
-            self.last_enemy_pos = (self.game.player.x, self.game.player.y)
-            came_from, cost_so_far = self.a_star_search((self.x, self.y), target)
-            self.path = self.reconstruct_path(came_from, target)
-            self.rotate_sprite(self.current_angle) # not sure if this helps, but I want to believe it does lol
-        # if AI is still following current path calculate movement
-        elif self.path != []:
-            coordinate_to_move = next(iter(self.path))
-            dx = coordinate_to_move[0] - self.x
-            dy = coordinate_to_move[1] - self.y
+            if self.state != self.last_state:
+                self.path = []
+                self.last_state = self.state
 
-            # rotate the sprite before moving
-            match (dx, dy):
-                case (1,0):
-                    self.current_angle = 180
-                    self.rotate_sprite(self.current_angle)
-                case (-1,0):
-                    self.current_angle = 0
-                    self.rotate_sprite(self.current_angle)
-                case (0,1):
-                    self.current_angle = 90
-                    self.rotate_sprite(self.current_angle)
-                case (0,-1):
-                    self.current_angle = -90
-                    self.rotate_sprite(self.current_angle)
+            # get the target based on the state
+            if self.state == "chase":
+                target = (self.target.x, self.target.y)
+            if self.state == "flank":
+                target = self.calculate_flank(self.target.x, self.target.y, self.flank_offset)
+            if self.state == "flee":
+                target = self.calculate_flee(self.target.x, self.target.y, 5)
 
-            self.raycast(dx, dy, RAYCAST_DISTANCE)
-            self.move(dx, dy)
-            # remove coordinate once AI has reached it
-            if self.x == coordinate_to_move[0] and self.y == coordinate_to_move[1]:
-                self.path.pop(0)
+            # start of a star
+            # if AI has reached its destination make new path
+            if self.path == []:
+                self.last_enemy_pos = (self.target.x, self.target.y)
+                came_from, cost_so_far = self.a_star_search((self.x, self.y), target)
+                self.path = self.reconstruct_path(came_from, target)
+                self.rotate_sprite(self.current_angle) # not sure if this helps, but I want to believe it does lol
+            # if AI is still following current path calculate movement
+            elif self.path != []:
+                coordinate_to_move = next(iter(self.path))
+                dx = coordinate_to_move[0] - self.x
+                dy = coordinate_to_move[1] - self.y
+
+                # rotate the sprite before moving
+                match (dx, dy):
+                    case (1,0):
+                        self.current_angle = 180
+                        self.rotate_sprite(self.current_angle)
+                    case (-1,0):
+                        self.current_angle = 0
+                        self.rotate_sprite(self.current_angle)
+                    case (0,1):
+                        self.current_angle = 90
+                        self.rotate_sprite(self.current_angle)
+                    case (0,-1):
+                        self.current_angle = -90
+                        self.rotate_sprite(self.current_angle)
+
+                self.raycast(dx, dy, RAYCAST_DISTANCE)
+                self.move(dx, dy)
+                # remove coordinate once AI has reached it
+                if self.x == coordinate_to_move[0] and self.y == coordinate_to_move[1]:
+                    self.path.pop(0)

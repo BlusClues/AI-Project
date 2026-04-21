@@ -63,9 +63,11 @@ class Game:
                     Wall(self, col, row)
                     self.wall_positions.append((col, row))
                 elif tile == 'P':
-                    self.player = Player(self, col, row, 1)
+                    self.player = Player(self, col, row, 1, BLUETANK_HEALTH_X)
                 elif tile == 'T':
-                    self.ai_tank = AITank(self, col, row, 2)
+                    self.ai_tank1 = AITank(self, col, row, 2, RED_TANK_SPRITE_PATH, RED, RED_BULLET_SPRITE_PATH, 2, 6, REDTANK_HEALTH_X, 3, 3)
+                elif tile == 'L':
+                    self.ai_tank2 = AITank(self, col, row, 3, GREEN_TANK_SPRITE_PATH, GREEN, GREEN_BULLET_SPRITE_PATH, 1, 7, BLUETANK_HEALTH_X, 5, 6)
 
     def run(self):
         # game loop
@@ -101,8 +103,8 @@ class Game:
         self.screen.blit(self.background, (0, 0))
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        self.player.display_health(BLUETANK_HEALTH_X, TANK_HEALTH_Y)
-        self.ai_tank.display_health(REDTANK_HEALTH_X, TANK_HEALTH_Y)
+        for tank in self.tanks:
+            tank.display_health(tank.health_x_pos, TANK_HEALTH_Y)
 
         # flip display after drawing
         pygame.display.flip()
