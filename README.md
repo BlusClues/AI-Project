@@ -23,9 +23,9 @@ This project was made as my final project for my COMP 3710 Applied Artificial In
 ## 🚀 Usage/Requirements
 
 This project has a few required packages to run:
--Python 3.x
--Pygame (For seeing and showcasing the game)
--Pillow (For image processing and GIF generation)
+- Python 3.x
+- Pygame (For seeing and showcasing the game)
+- Pillow (For image processing and GIF generation)
 
 Once those are installed, Go into Settings.py
 Change BACKGROUND_IMAGE to your image path. 
