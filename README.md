@@ -3,6 +3,11 @@
 Generate a dynamic game map on any uploaded image of your choice!
 Have two AI tanks duke it out in the arena!
 
+## Example!
+Here is a example with a image of a pretzel!
+
+<img width="1920" height="1080" alt="GoodPretzelFight" src="https://github.com/user-attachments/assets/025326b7-b2a6-4bc1-a46f-c0da9cd334e2" />
+
 ## 🌟 Highlights
 
 - Uses Otsu's Method to get an average of the colour intensity of the image
@@ -12,6 +17,7 @@ Have two AI tanks duke it out in the arena!
 ## ℹ️ Overview
 
 This project addresses procedural generation of a 2D game from unstructured real-world images. The generative method of the project uses a customized image processing pipeline, using Otsu’s method for dynamic thresholding with a flood fill algorithm for the topological cleanup. It converts the image using the gameplay rules so that the final output is recognizable and playable. This pipeline translates high-quality photographs into a retro, top-down, grid-based art style suitable for a 32x32 tile tank combat simulation.  By placing the AI in this chaotic, generated environment, the tanks are forced to rely on dynamic A* pathfinding and real-time ray casting. This proves the robustness of their FSMs as arenas cannot be pre-calculated or memorized.
+
 This project was made as my final project for my COMP 3710 Applied Artificial Intelligence. The project was made with one requirement, make a computational artist.
 
 ## 🚀 Usage/Requirements
